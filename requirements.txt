@@ -1,0 +1,33 @@
+# Optena demo app — dependency lock
+#
+# Verified on the deployment target: Ubuntu 26.04 LTS, CPython 3.14.4.
+# Full install + clean import of every package took 17s; venv footprint 644 MB.
+#
+# Changes from the original requirements.txt, and why:
+#   + kaleido      REQUIRED. optena1.py calls plotly fig.write_image() for the
+#                  "Presentation Demo" feature; without kaleido that raises at runtime.
+#                  It was missing from the original file.
+#   - pmdarima     Removed. Never imported by optena1.py, and it is the single most
+#                  install-hostile dependency (no wheels for recent CPython).
+#   - statsmodels  Removed. Never imported by optena1.py.
+#   ~ tables/h5py  Moved to the optional block below; only the .h5 upload path uses them.
+#   ~ pins raised  The original pins (streamlit 1.37.1, numpy 1.26.4, pandas 2.2.2,
+#                  prophet 1.1.6) have no CPython 3.14 wheels and cannot be installed
+#                  on the target at all.
+
+streamlit==1.65.0
+pandas==3.0.6
+numpy==2.5.3
+matplotlib==3.11.2
+plotly==7.1.0
+prophet==1.4.0
+kaleido==1.4.0
+networkx==3.6.1
+# networkx is imported by dcplos_engine.py (Tab 5), not by optena1.py directly.
+# It is a transitive-through-local-module dependency; the smoke test caught that
+# Tab 5 crashed with ModuleNotFoundError until it was added.
+
+# Optional — only needed if a reviewer uploads HDF5 (.h5) instead of CSV.
+# Uncomment both lines if you want the .h5 branch of the uploader to work.
+# tables
+# h5py

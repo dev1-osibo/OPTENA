@@ -1,0 +1,47 @@
+[Unit]
+Description=Optena Streamlit demo app (reviewer instance)
+Documentation=https://github.com/dev1-osibo/OPTENA
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/optena-app
+Environment=PYTHONUNBUFFERED=1
+Environment=STREAMLIT_BROWSER_GATHER_USAGE_STATS=false
+
+# Bound to loopback on purpose: nginx terminates the public connection and applies
+# HTTP basic auth. Streamlit itself has no authentication, so it must never listen
+# on 0.0.0.0 on this host.
+ExecStart=/home/ubuntu/optena-app/venv/bin/streamlit run optena1.py \
+    --server.address=127.0.0.1 \
+    --server.port=8501 \
+    --server.headless=true \
+    --server.fileWatcherType=none \
+    --browser.gatherUsageStats=false
+
+Restart=on-failure
+RestartSec=5
+
+# This box also runs the cortafy production stack. Cap resources so a runaway
+# Streamlit session cannot starve it.
+MemoryMax=1200M
+CPUQuota=120%
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/ubuntu/optena-app
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+StandardOutput=append:/var/log/optena/app.log
+StandardError=append:/var/log/optena/error.log
+
+[Install]
+WantedBy=multi-user.target

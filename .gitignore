@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+.env
+.env.*
+*.pem
+*.key
+
+# runtime output
+optena_report_*.txt
+demo_exports/
+*.log
+
+# Access credentials — NEVER commit. Contains the live reviewer password.
+# Hand this file to the reviewer out-of-band (email/DM), not via the repo.
+REVIEWER_ACCESS.txt
+htpasswd
+.optena_htpasswd
