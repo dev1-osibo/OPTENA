@@ -1,4 +1,4 @@
-# Optena — Data Centre Energy Optimization (demo application)
+# Optena — Data Centre Energy Optimization
 
 A Streamlit dashboard for data-centre energy analysis: KPI reporting, Prophet-based
 energy and renewable forecasting, IT equipment inventory and optimisation, efficiency
